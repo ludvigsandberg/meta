@@ -171,7 +171,10 @@
 #define arr_insert_n(A, I, N, B)                                              \
     do {                                                                      \
         arr_insert_raw_n(A, I, N);                                            \
-        memcpy((A) + (I), (B), (N) * sizeof((A)[0]));                         \
+                                                                              \
+        for (size_t uniq(j) = 0; uniq(j) < (N); ++uniq(j)) {                  \
+            (A)[(I) + uniq(j)] = (B)[uniq(j)];                                \
+        }                                                                     \
     } while (0)
 
 /** @brief Insert a single element into an array at a specific index. */
