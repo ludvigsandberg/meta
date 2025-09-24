@@ -1,6 +1,6 @@
 # meta.h
 Ultra-lightweight container library fully compatible with standard C99.
-Single-header, macro-based, type-safe, and "include-what-you-need."
+Single-header, macro-based, type-safe, and "include-what-you-need".
 Contains implementations for arrays and hash maps.
 
 ## Usage
