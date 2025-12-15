@@ -245,10 +245,7 @@
     } while (0)
 
 /** NOTE: Always check if queue is empty before pop. */
-#define queue_pop(Q)                                                          \
-    (Q).buf[((Q).head = ((Q).head + 1) % alen((Q).buf)) == 0                  \
-                ? alen((Q).buf) - 1                                           \
-                : (Q).head - 1]
+#define queue_pop(Q) (Q).buf[(Q).head++ % alen((Q).buf)]
 
 /* -------------------------------------------------------------------------
    Generic hash map.
