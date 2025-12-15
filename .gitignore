@@ -1,5 +1,6 @@
 test.c
 test
+test.exe
 build.sh
 
 CMakeLists.txt.user

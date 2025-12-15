@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------
-   meta.h - single-header C99 container library by Ludvig Sandberg, 2025.
+   meta.h - C99 container library by Ludvig Sandberg, 2025.
    ------------------------------------------------------------------------- */
 
 #ifndef META_H
@@ -30,7 +30,7 @@
 #define foreach(N, I) for (size_t I = 0; I < (N); I++)
 
 /* -------------------------------------------------------------------------
-   Generic type-safe dynamic array.
+   Generic dynamic array.
    Metadata about array length and capacity is stored at
    indices -2 and -1 and array elements begin like normal at index 0.
    ------------------------------------------------------------------------- */
@@ -212,7 +212,46 @@
 #define arr_remove_ptr(A, P) arr_remove(A, (size_t)((P) - (A)))
 
 /* -------------------------------------------------------------------------
-   Generic type-safe hash map.
+   Generic FIFO queue (ring buffer).
+   ------------------------------------------------------------------------- */
+
+#define queue(T)                                                              \
+    struct {                                                                  \
+        arr(T) buf;                                                           \
+        size_t head; /* Head index. */                                        \
+        size_t tail; /* Tail index. */                                        \
+    }
+
+#define queue_empty(Q) ((Q).head == (Q).tail)
+
+#define queue_len(Q) (((Q).tail + alen((Q).buf) - (Q).head) % alen((Q).buf))
+
+#define queue_new(Q, CAP)                                                     \
+    do {                                                                      \
+        arr_new_n((Q).buf, CAP);                                              \
+        (Q).head = 0;                                                         \
+        (Q).tail = 0;                                                         \
+    } while (0)
+
+#define queue_free(Q) arr_free((Q).buf)
+
+#define queue_push(Q, ELEM)                                                   \
+    do {                                                                      \
+        if (((Q).tail + 1) % alen((Q).buf) == (Q).head) {                     \
+            arr_append((Q).buf, ELEM);                                        \
+        }                                                                     \
+        (Q).buf[(Q).tail] = ELEM;                                             \
+        (Q).tail          = ((Q).tail + 1) % alen((Q).buf);                   \
+    } while (0)
+
+/** NOTE: Always check if queue is empty before pop. */
+#define queue_pop(Q)                                                          \
+    (Q).buf[((Q).head = ((Q).head + 1) % alen((Q).buf)) == 0                  \
+                ? alen((Q).buf) - 1                                           \
+                : (Q).head - 1]
+
+/* -------------------------------------------------------------------------
+   Generic hash map.
    ------------------------------------------------------------------------- */
 
 #define map(K, V)                                                             \
