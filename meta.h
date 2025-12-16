@@ -212,44 +212,29 @@
 #define arr_remove_ptr(A, P) arr_remove(A, (size_t)((P) - (A)))
 
 /* -------------------------------------------------------------------------
-   Generic FIFO queue (ring buffer).
+   Generic FIFO queue. Simple growing array, not memory efficient.
    ------------------------------------------------------------------------- */
 
 #define queue(T)                                                              \
     struct {                                                                  \
         arr(T) buf;                                                           \
-        size_t head; /* Head index. */                                        \
-        size_t tail; /* Tail index. */                                        \
-        size_t len;  /* Number of elements. */                                \
+        size_t head;                                                          \
     }
+
+#define queue_len(Q) (alen((Q).buf) - (Q).head)
 
 #define queue_new(Q, CAP)                                                     \
     do {                                                                      \
-        arr_new_n((Q).buf, CAP);                                              \
+        arr_new_reserve((Q).buf, CAP);                                        \
         (Q).head = 0;                                                         \
-        (Q).tail = 0;                                                         \
     } while (0)
 
 #define queue_free(Q) arr_free((Q).buf)
 
-#define queue_push(Q, ELEM)                                                   \
-    do {                                                                      \
-        if ((Q).len == alen((Q).buf)) {                                       \
-            arr_append((Q).buf, ELEM);                                        \
-        }                                                                     \
-        (Q).buf[(Q).tail] = ELEM;                                             \
-        (Q).tail          = ((Q).tail + 1) % alen((Q).buf);                   \
-        (Q).len++;                                                            \
-    } while (0)
+#define queue_push(Q, ELEM) arr_append((Q).buf, ELEM)
 
 /** NOTE: Always check if queue is empty before pop. */
-#define queue_pop(Q, OUT)                                                     \
-    do {                                                                      \
-        assert((Q).len > 0);                                                  \
-        OUT      = (Q).buf[(Q).head];                                         \
-        (Q).head = ((Q).head + 1) % alen((Q).buf);                            \
-        (Q).len--;                                                            \
-    } while (0)
+#define queue_pop(Q) (Q).buf[(Q).head++]
 
 /* -------------------------------------------------------------------------
    Generic hash map.
