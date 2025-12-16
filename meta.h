@@ -220,11 +220,8 @@
         arr(T) buf;                                                           \
         size_t head; /* Head index. */                                        \
         size_t tail; /* Tail index. */                                        \
+        size_t len;  /* Number of elements. */                                \
     }
-
-#define queue_empty(Q) ((Q).head == (Q).tail)
-
-#define queue_len(Q) (((Q).tail + alen((Q).buf) - (Q).head) % alen((Q).buf))
 
 #define queue_new(Q, CAP)                                                     \
     do {                                                                      \
@@ -237,15 +234,24 @@
 
 #define queue_push(Q, ELEM)                                                   \
     do {                                                                      \
-        if (((Q).tail + 1) % alen((Q).buf) == (Q).head) {                     \
+        if ((Q).len == alen((Q).buf)) {                                       \
             arr_append((Q).buf, ELEM);                                        \
         }                                                                     \
         (Q).buf[(Q).tail] = ELEM;                                             \
         (Q).tail          = ((Q).tail + 1) % alen((Q).buf);                   \
+        (Q).len++;                                                            \
     } while (0)
 
 /** NOTE: Always check if queue is empty before pop. */
-#define queue_pop(Q) (Q).buf[(Q).head++ % alen((Q).buf)]
+#define queue_pop(Q, PTR)                                                     \
+    do {                                                                      \
+        assert((Q).len > 0);                                                  \
+                                                                              \
+        *(PTR) = (Q).buf[(Q).head];                                           \
+                                                                              \
+        (Q).head = ((Q).head + 1) % alen((Q).buf);                            \
+        (Q).len--;                                                            \
+    } while (0)
 
 /* -------------------------------------------------------------------------
    Generic hash map.
