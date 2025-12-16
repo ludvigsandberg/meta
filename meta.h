@@ -243,12 +243,10 @@
     } while (0)
 
 /** NOTE: Always check if queue is empty before pop. */
-#define queue_pop(Q, PTR)                                                     \
+#define queue_pop(Q, OUT)                                                     \
     do {                                                                      \
         assert((Q).len > 0);                                                  \
-                                                                              \
-        *(PTR) = (Q).buf[(Q).head];                                           \
-                                                                              \
+        OUT      = (Q).buf[(Q).head];                                         \
         (Q).head = ((Q).head + 1) % alen((Q).buf);                            \
         (Q).len--;                                                            \
     } while (0)
