@@ -2,7 +2,7 @@
 
 ![C99](https://img.shields.io/badge/C-C99-informational)
 
-Beautiful container library for ISO C99
+Beautiful ISO C99 container library focused on true genericity
 
 ## Build
 

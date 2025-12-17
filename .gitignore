@@ -1,7 +1,4 @@
-test.c
-test
-test.exe
-build.sh
+build/
 
 CMakeLists.txt.user
 CMakeCache.txt
