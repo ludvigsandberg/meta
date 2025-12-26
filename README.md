@@ -4,6 +4,11 @@
 
 Beautiful ISO C99 container library focused on true genericity
 
+- [x] Generic, dynamic arrays
+- [x] Generic hash maps
+- [x] Generic queues
+- [ ] Vectors and matrices (WIP)
+
 ## Build
 
 CMake
@@ -26,9 +31,11 @@ target_link_libraries(target PRIVATE xlib)
 
 ## Examples
 
-todo
+TODO
 
 ## Tests
+
+WIP
 
 ```sh
 cmake -S . -B build -DBUILD_TESTS=ON
