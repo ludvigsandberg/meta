@@ -7,25 +7,25 @@
 
 // very simple fifo queue
 // not memory efficient
-#define queue(T)                                                              \
+#define xqueue(T)                                                             \
     struct {                                                                  \
-        arr(T) elems;                                                         \
+        xarr(T) elems;                                                        \
         size_t head;                                                          \
     }
 
-#define queue_len(Q) (alen((Q).elems) - (Q).head)
+#define xqueue_len(Q) (xalen((Q).elems) - (Q).head)
 
-#define queue_new(Q, CAP)                                                     \
+#define xqueue_new(Q, CAP)                                                    \
     do {                                                                      \
-        arr_new_reserve((Q).elems, CAP);                                      \
+        xarr_new_reserve((Q).elems, CAP);                                     \
         (Q).head = 0;                                                         \
     } while (0)
 
-#define queue_free(Q) arr_free((Q).elems)
+#define xqueue_free(Q) xarr_free((Q).elems)
 
-#define queue_push(Q, ELEM) arr_append((Q).elems, ELEM)
+#define xqueue_push(Q, ELEM) xarr_append((Q).elems, ELEM)
 
 // always make sure queue has atleast one element before pop
-#define queue_pop(Q) (Q).elems[(Q).head++]
+#define xqueue_pop(Q) (Q).elems[(Q).head++]
 
 #endif

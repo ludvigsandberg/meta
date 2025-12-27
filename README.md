@@ -1,13 +1,11 @@
 # xlib
 
 ![C99](https://img.shields.io/badge/C-C99-informational)
+![CMake](https://img.shields.io/badge/CMake-%23008FBA.svg?style=flat&logo=cmake&logoColor=white)
 
 Beautiful ISO C99 container library focused on true genericity
 
-- [x] Generic, dynamic arrays
-- [x] Generic hash maps
-- [x] Generic queues
-- [ ] Vectors and matrices (WIP)
+Check out the [docs](https://github.com/ludvigsandberg/xlib/wiki) for examples
 
 ## Build
 
@@ -18,27 +16,10 @@ add_subdirectory(path/to/xlib)
 target_link_libraries(target PRIVATE xlib)
 ```
 
-CMake FetchContent
+Tests
 
 ```sh
-include(FetchContent)
-
-FetchContent_Declare(xlib GIT_REPOSITORY https://github.com/ludvigsandberg/xlib)
-FetchContent_MakeAvailable(xlib)
-
-target_link_libraries(target PRIVATE xlib)
-```
-
-## Examples
-
-TODO
-
-## Tests
-
-WIP
-
-```sh
-cmake -S . -B build -DBUILD_TESTS=ON
+cmake -B build -S . -DBUILD_TESTS=ON
 cmake --build build
 ctest --output-on-failure
 ```

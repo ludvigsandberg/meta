@@ -64,8 +64,7 @@
 
 #define xvec(N, T)                                                            \
     union {                                                                   \
-        xvec_components_##N(T);                                               \
-        T nth[N];                                                             \
+        xvec_components_##N(T) T nth[N];                                      \
     }
 
 typedef xvec(2, float) xvec2f32_t;

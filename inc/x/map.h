@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <string.h>
+#include <stdbool.h>
 #include <assert.h>
 
 #include <x/arr.h>
@@ -188,8 +189,9 @@
     do {                                                                      \
         size_t xuniq2(hash, xmap_remove) = HASH(&(K)) % xacap((M).bkts);      \
                                                                               \
-        for (size_t xuniq2(i, xmap_remove); xuniq2(i, xmap_remove);           \
-             < xalen((M).bkts[xuniq2(hash, xmap_remove)]);                    \
+        for (size_t xuniq2(i, xmap_remove);                                   \
+             xuniq2(i, xmap_remove) <                                         \
+             xalen((M).bkts[xuniq2(hash, xmap_remove)]);                      \
              ++xuniq2(i, xmap_remove)) {                                      \
             if (EQ(&(M).bkts[xuniq2(hash, xmap_remove)]                       \
                             [xuniq2(i, xmap_remove)]                          \

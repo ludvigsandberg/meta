@@ -1,8 +1,9 @@
 #ifndef XMETA_H
 #define XMETA_H
 
-#define xconcat2(A, B) A##B
+// concatenate
 #define xconcat(A, B)  xconcat2(A, B)
+#define xconcat2(A, B) A##B
 
 // generate unique name for internal macro identifier
 #define xuniq(NAME) xconcat(NAME, __LINE__)

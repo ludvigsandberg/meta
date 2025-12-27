@@ -133,8 +133,8 @@
 #define xarr_append_n_raw(A, N)                                               \
     do {                                                                      \
         /* capture I before xalen(A) mutates */                               \
-        size_t uniq(i) = xalen(A);                                            \
-        xarr_insert_raw_n(A, uniq(i), N);                                     \
+        size_t xuniq(i) = xalen(A);                                           \
+        xarr_insert_raw_n(A, xuniq(i), N);                                    \
     } while (0)
 
 // append uninitialized element to array
@@ -145,8 +145,8 @@
     do {                                                                      \
         xarr_insert_raw_n(A, I, N);                                           \
                                                                               \
-        for (size_t uniq(j) = 0; uniq(j) < (N); ++uniq(j)) {                  \
-            (A)[(I) + uniq(j)] = (B)[uniq(j)];                                \
+        for (size_t xuniq(j) = 0; xuniq(j) < (N); ++xuniq(j)) {               \
+            (A)[(I) + xuniq(j)] = (B)[xuniq(j)];                              \
         }                                                                     \
     } while (0)
 
@@ -157,8 +157,8 @@
 #define xarr_append_n(A, N, B)                                                \
     do {                                                                      \
         /* capture len before it mutates */                                   \
-        size_t uniq(i) = xalen(A);                                            \
-        xarr_insert_n(A, uniq(i), N, B);                                      \
+        size_t xuniq(i) = xalen(A);                                           \
+        xarr_insert_n(A, xuniq(i), N, B);                                     \
     } while (0)
 
 // append element to array
