@@ -40,7 +40,7 @@
     xarr_from_string_literal2(A, L, LO, 0)
 
 // hash function for a string using the xarr api
-uint64_t xstring_hash(const xarr(char) * key) {
+static inline uint64_t xstring_hash(const xarr(char) * key) {
     uint64_t hash = 14695981039346656037ul;
 
     for (size_t i = 0; i < xalen(*key); ++i) {
@@ -52,12 +52,12 @@ uint64_t xstring_hash(const xarr(char) * key) {
 }
 
 // equal function for a string using the xarr api
-bool xstring_eq(const xarr(char) * a, const xarr(char) * b) {
+static inline bool xstring_eq(const xarr(char) * a, const xarr(char) * b) {
     return xalen(*a) == xalen(*b) && memcmp(*a, *b, xalen(*a)) == 0;
 }
 
 // hash function for a null terminated string
-uint64_t xstring_hash_nt(const char **key) {
+static inline uint64_t xstring_hash_nt(const char **key) {
     uint64_t hash = 14695981039346656037ul;
 
     for (size_t i = 0; i < strlen(*key); ++i) {
@@ -69,7 +69,7 @@ uint64_t xstring_hash_nt(const char **key) {
 }
 
 // equal function for a null terminated string
-bool xstring_eq_nt(const char **a, const char **b) {
+static inline bool xstring_eq_nt(const char **a, const char **b) {
     return strlen(*a) == strlen(*b) && memcmp(*a, *b, strlen(*a)) == 0;
 }
 
