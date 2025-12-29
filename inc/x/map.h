@@ -19,6 +19,9 @@
         size_t pop; /* num populated buckets */                               \
     }
 
+// map length
+#define xmap_len(M) (M).len
+
 // iterate over key value pairs in map
 #define xmap_foreach(M, K, V)                                                 \
     for (size_t xuniq(i) = 0; xuniq(i) < xalen((M).bkts); ++xuniq(i))         \
@@ -84,8 +87,8 @@
         (BOOL) = xuniq2(v, xmap_contains) != NULL;                            \
     } while (0)
 
-// internal macro: set map key without rehash
-#define xmap_set_no_rehash(M, CAP, HASH, EQ, K, V)                            \
+// set map key without rehash
+#define _xmap_set_no_rehash(M, CAP, HASH, EQ, K, V)                           \
     do {                                                                      \
         size_t xuniq2(hash, xmap_set_no_rehash)   = HASH(&(K)) % (CAP);       \
         bool xuniq2(replaced, xmap_set_no_rehash) = false;                    \
@@ -160,7 +163,7 @@
                          ((M).bkts +                                          \
                           xuniq2(new_cap, xmap_set))[xuniq2(bkt, xmap_set)]); \
                      ++xuniq2(i, xmap_set)) {                                 \
-                    xmap_set_no_rehash(                                       \
+                    _xmap_set_no_rehash(                                      \
                         M, xuniq2(new_cap, xmap_set), HASH, EQ,               \
                         ((M).bkts + xuniq2(new_cap, xmap_set))[xuniq2(        \
                             bkt, xmap_set)][xuniq2(i, xmap_set)]              \
@@ -181,7 +184,7 @@
         }                                                                     \
                                                                               \
         /* insert new value */                                                \
-        xmap_set_no_rehash(M, xacap((M).bkts), HASH, EQ, K, V);               \
+        _xmap_set_no_rehash(M, xacap((M).bkts), HASH, EQ, K, V);              \
     } while (0)
 
 // remove key value pair from map
@@ -189,7 +192,7 @@
     do {                                                                      \
         size_t xuniq2(hash, xmap_remove) = HASH(&(K)) % xacap((M).bkts);      \
                                                                               \
-        for (size_t xuniq2(i, xmap_remove);                                   \
+        for (size_t xuniq2(i, xmap_remove) = 0;                               \
              xuniq2(i, xmap_remove) <                                         \
              xalen((M).bkts[xuniq2(hash, xmap_remove)]);                      \
              ++xuniq2(i, xmap_remove)) {                                      \

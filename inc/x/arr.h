@@ -57,39 +57,6 @@
         xacap(A) = (N);                                                       \
     } while (0);
 
-#if !defined(__SIZEOF_SIZE_T__) || __SIZEOF_SIZE_T__ == 8
-#define XZEROES "\x00\x00\x00\x00\x00\x00"
-#elif __SIZEOF_SIZE_T__ == 16
-#define XZEROES "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-#elif __SIZEOF_SIZE_T__ == 4
-#define XZEROES "\x00\x00"
-#else
-#error "unknown platform"
-#endif
-
-#if !defined(__BYTE_ORDER__) || __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#define xliteral(LO, HI) xconcat(HEX_, LO) xconcat(HEX_, HI) XZEROES
-#else
-#define xliteral(LO, HI) xconcat(HEX_, HI) xconcat(HEX_, LO) XZEROES
-#endif
-
-// embed string literal in array without allocating memory
-// eg xarr_from_string_literal_ex(str, "hello", 5, 0)
-#define xarr_from_string_literal_ex(A, L, LO, HI)                             \
-    do {                                                                      \
-        xstatic_assert(sizeof(L) - 1 == (((HI) << 8) | (LO)),                 \
-                       "invalid length");                                     \
-        xgeneric_assign((A), (xliteral(LO, HI) xliteral(LO, HI) L) +          \
-                                 2 * sizeof(size_t));                         \
-    } while (0)
-
-// embed string literal in array without allocating memory
-// eg xarr_from_string_literal(str, "hello", 5)
-// note, this macro only supports length up to 255
-// for longer string literals use xarr_from_string_literal_ex
-#define xarr_from_string_literal(A, L, LO)                                    \
-    xarr_from_string_literal_ex(A, L, LO, 0)
-
 // free array
 #define xarr_free(A) free(((size_t *)A) - 2);
 
