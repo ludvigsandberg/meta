@@ -5,7 +5,7 @@
 
 Beautiful ISO C99 container library focused on true genericity
 
-Check out the [docs](https://github.com/ludvigsandberg/xlib/wiki) for examples
+See the [docs](https://github.com/ludvigsandberg/xlib/wiki) for examples
 
 ## Build
 
