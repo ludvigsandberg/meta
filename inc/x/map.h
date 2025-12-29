@@ -25,7 +25,7 @@
 // iterate over key value pairs in map
 #define xmap_foreach(M, K, V)                                                 \
     for (size_t xuniq(i) = 0; xuniq(i) < xalen((M).bkts); ++xuniq(i))         \
-        for (size_t xuniq(j) = 0; xuniq(j) < xalen((M).bkts[uniq(i)]);        \
+        for (size_t xuniq(j) = 0; xuniq(j) < xalen((M).bkts[xuniq(i)]);       \
              ++xuniq(j))                                                      \
             for (bool xuniq(once) = true; xuniq(once);)                       \
                 for ((K) = &((M).bkts[xuniq(i)][xuniq(j)].key),               \
