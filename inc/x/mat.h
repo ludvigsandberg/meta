@@ -58,6 +58,19 @@ typedef xmat(4, 4, double) xmat4f64_t;
 
 #define xmat4_mul(A, B, O) xmat_mul(4, 4, 4, A, B, O)
 
+#define _xmat4_translate_in_place(T, M, VEC)                                  \
+    do {                                                                      \
+        (M).at[0][3] += (VEC).nth[0];                                         \
+        (M).at[1][3] += (VEC).nth[1];                                         \
+        (M).at[2][3] += (VEC).nth[2];                                         \
+    } while (0)
+
+#define xmat4f32_translate_in_place(M, VEC)                                   \
+    _xmat4_translate_in_place(float, M, VEC)
+
+#define xmat4f64_translate_in_place(M, VEC)                                   \
+    _xmat4_translate_in_place(double, M, VEC)
+
 #define _xlook_at(T, POS, TARGET, UP, O)                                      \
     do {                                                                      \
         xvec(3, T) xuniq(diff);                                               \
