@@ -138,12 +138,15 @@ typedef xvec(4, uint64_t) xvec4u64_t;
     do {                                                                      \
         T xuniq2(len, _xvec_norm);                                            \
         xvec_len_##POSTFIX(V, xuniq2(len, _xvec_norm));                       \
-        assert(xuniq2(len, _xvec_norm) != (T)0 && "zero len");                \
                                                                               \
-        for (size_t xuniq2(i, _xvec_norm) = 0;                                \
-             xuniq2(i, _xvec_norm) < xvec_n(V); ++xuniq2(i, _xvec_norm)) {    \
-            (O).nth[xuniq2(i, _xvec_norm)] =                                  \
-                (T)(V).nth[xuniq2(i, _xvec_norm)] / xuniq2(len, _xvec_norm);  \
+        if (xuniq2(len, _xvec_norm) != (T)0) {                                \
+            for (size_t xuniq2(i, _xvec_norm) = 0;                            \
+                 xuniq2(i, _xvec_norm) < xvec_n(V);                           \
+                 ++xuniq2(i, _xvec_norm)) {                                   \
+                (O).nth[xuniq2(i, _xvec_norm)] =                              \
+                    (T)(V).nth[xuniq2(i, _xvec_norm)] /                       \
+                    xuniq2(len, _xvec_norm);                                  \
+            }                                                                 \
         }                                                                     \
     } while (0)
 
