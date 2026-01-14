@@ -2,13 +2,15 @@
 #include <assert.h>
 
 int main(int argc, char **argv) {
-    xmat3f32_t m3 = xmat3_identity(float);
+    xmat3f32_t m3;
+    xmat_identity_f32(m3);
     assert(m3.at[0][0] == 1.0f);
     assert(m3.at[1][1] == 1.0f);
     assert(m3.at[2][2] == 1.0f);
     assert(m3.at[0][1] == 0.0f);
 
-    xmat4f32_t m4 = xmat4_identity(float);
+    xmat4f32_t m4;
+    xmat_identity_f32(m4);
     assert(m4.at[0][0] == 1.0f);
     assert(m4.at[1][1] == 1.0f);
     assert(m4.at[2][2] == 1.0f);
@@ -23,14 +25,27 @@ int main(int argc, char **argv) {
     assert(result.at[0][1] == 24.0f);
     assert(result.at[0][2] == 18.0f);
 
-    xmat4f32_t m4a = xmat4_identity(float);
-    xmat4f32_t m4b = xmat4_identity(float);
+    xmat4f32_t m4a;
+    xmat_identity_f32(m4a);
+    xmat4f32_t m4b;
+    xmat_identity_f32(m4b);
     xmat4f32_t m4result;
     xmat4_mul(m4a, m4b, m4result);
     assert(m4result.at[0][0] == 1.0f);
     assert(m4result.at[1][1] == 1.0f);
     assert(m4result.at[2][2] == 1.0f);
     assert(m4result.at[3][3] == 1.0f);
+
+    float aspect_ratio = 1.f;
+    float fov          = 70.f;
+    xmat4f32_t projection;
+    xperspective_f32(aspect_ratio, fov, 0.1f, 10000.f, projection);
+
+    xvec3f32_t pos;
+    xvec3f32_t target;
+    xvec3f32_t up;
+    xmat4f32_t view;
+    xlook_at_f32(pos, target, up, view);
 
     return 0;
 }
