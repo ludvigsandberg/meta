@@ -139,15 +139,17 @@ typedef xvec(4, uint64_t) xvec4u64_t;
         T xuniq2(len, _xvec_norm);                                            \
         xvec_len_##POSTFIX(V, xuniq2(len, _xvec_norm));                       \
                                                                               \
-        if (xuniq2(len, _xvec_norm) != (T)0) {                                \
-            for (size_t xuniq2(i, _xvec_norm) = 0;                            \
-                 xuniq2(i, _xvec_norm) < xvec_n(V);                           \
-                 ++xuniq2(i, _xvec_norm)) {                                   \
+        for (size_t xuniq2(i, _xvec_norm) = 0;                                \
+             xuniq2(i, _xvec_norm) < xvec_n(V); ++xuniq2(i, _xvec_norm)) {    \
+            if (xuniq2(len, _xvec_norm) == (T)0) {                            \
+                (O).nth[xuniq2(i, _xvec_norm)] = (T)0;                        \
+            } else {                                                          \
                 (O).nth[xuniq2(i, _xvec_norm)] =                              \
                     (T)(V).nth[xuniq2(i, _xvec_norm)] /                       \
                     xuniq2(len, _xvec_norm);                                  \
             }                                                                 \
         }                                                                     \
+                                                                              \
     } while (0)
 
 // normalize vec, o should be xvec<n>f32_t
