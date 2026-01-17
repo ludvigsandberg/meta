@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.21)
-project(libx LANGUAGES C)
+project(x LANGUAGES C)
 
 # library
 
-add_library(libx INTERFACE)
+add_library(x INTERFACE)
 
-set_target_properties(libx PROPERTIES
+set_target_properties(x PROPERTIES
     C_STANDARD 99
     C_STANDARD_REQUIRED ON
 )
 
-target_include_directories(libx INTERFACE
+target_include_directories(x INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/inc/
 )
 
