@@ -9,6 +9,7 @@
 #include <x/meta.h>
 #include <x/vec.h>
 
+// row major matrix
 #define xmat(R, C, T)                                                         \
     union {                                                                   \
         T at[R][C];                                                           \
@@ -62,9 +63,9 @@ typedef xmat(4, 4, double) xmat4f64_t;
     do {                                                                      \
         xmat(4, 4, T) xuniq2(m, _xmat4_translate);                            \
         _xmat_identity(xuniq2(m, _xmat4_translate), T);                       \
-        (O).at[0][3] = (VEC).nth[0];                                          \
-        (O).at[1][3] = (VEC).nth[1];                                          \
-        (O).at[2][3] = (VEC).nth[2];                                          \
+        (xuniq2(m, _xmat4_translate)).at[0][3] = (VEC).nth[0];                \
+        (xuniq2(m, _xmat4_translate)).at[1][3] = (VEC).nth[1];                \
+        (xuniq2(m, _xmat4_translate)).at[2][3] = (VEC).nth[2];                \
         xmat4_mul(M, xuniq2(m, _xmat4_translate), O);                         \
     } while (0)
 
