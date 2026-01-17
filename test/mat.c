@@ -41,9 +41,9 @@ int main(int argc, char **argv) {
     xmat4f32_t projection;
     xperspective_f32(aspect_ratio, fov, 0.1f, 10000.f, projection);
 
-    xvec3f32_t pos;
-    xvec3f32_t target;
-    xvec3f32_t up;
+    xvec3f32_t pos    = {{0.f, 1.f, 0.f}};
+    xvec3f32_t target = {{0.f, 0.f, 0.f}};
+    xvec3f32_t up     = {{0.f, 1.f, 0.f}};
     xmat4f32_t view;
     xlook_at_f32(pos, target, up, view);
 

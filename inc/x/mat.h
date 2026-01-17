@@ -58,18 +58,19 @@ typedef xmat(4, 4, double) xmat4f64_t;
 
 #define xmat4_mul(A, B, O) xmat_mul(4, 4, 4, A, B, O)
 
-#define _xmat4_translate_in_place(T, M, VEC)                                  \
+#define _xmat4_translate(M, T, VEC, O)                                        \
     do {                                                                      \
-        (M).at[0][3] += (VEC).nth[0];                                         \
-        (M).at[1][3] += (VEC).nth[1];                                         \
-        (M).at[2][3] += (VEC).nth[2];                                         \
+        xmat(4, 4, T) xuniq2(m, _xmat4_translate);                            \
+        _xmat_identity(xuniq2(m, _xmat4_translate), T);                       \
+        (O).at[0][3] = (VEC).nth[0];                                          \
+        (O).at[1][3] = (VEC).nth[1];                                          \
+        (O).at[2][3] = (VEC).nth[2];                                          \
+        xmat4_mul(M, xuniq2(m, _xmat4_translate), O);                         \
     } while (0)
 
-#define xmat4f32_translate_in_place(M, VEC)                                   \
-    _xmat4_translate_in_place(float, M, VEC)
+#define xmat4f32_translate(M, VEC, O) _xmat4_translate(M, float, VEC, O)
 
-#define xmat4f64_translate_in_place(M, VEC)                                   \
-    _xmat4_translate_in_place(double, M, VEC)
+#define xmat4f64_translate(M, VEC, O) _xmat4_translate(M, double, VEC, O)
 
 #define _xlook_at(T, POS, TARGET, UP, O)                                      \
     do {                                                                      \
@@ -137,145 +138,107 @@ typedef xmat(4, 4, double) xmat4f64_t;
 
 #define _xmat4_invert(T, M, O)                                                \
     do {                                                                      \
-        T xuniq(det) =                                                        \
-            (M).at[0][0] * ((M).at[1][1] * ((M).at[2][2] * (M).at[3][3] -     \
-                                            (M).at[2][3] * (M).at[3][2]) -    \
-                            (M).at[1][2] * ((M).at[2][1] * (M).at[3][3] -     \
-                                            (M).at[2][3] * (M).at[3][1]) +    \
-                            (M).at[1][3] * ((M).at[2][1] * (M).at[3][2] -     \
-                                            (M).at[2][2] * (M).at[3][1])) -   \
-            (M).at[0][1] * ((M).at[1][0] * ((M).at[2][2] * (M).at[3][3] -     \
-                                            (M).at[2][3] * (M).at[3][2]) -    \
-                            (M).at[1][2] * ((M).at[2][0] * (M).at[3][3] -     \
-                                            (M).at[2][3] * (M).at[3][0]) +    \
-                            (M).at[1][3] * ((M).at[2][0] * (M).at[3][2] -     \
-                                            (M).at[2][2] * (M).at[3][0])) +   \
-            (M).at[0][2] * ((M).at[1][0] * ((M).at[2][1] * (M).at[3][3] -     \
-                                            (M).at[2][3] * (M).at[3][1]) -    \
-                            (M).at[1][1] * ((M).at[2][0] * (M).at[3][3] -     \
-                                            (M).at[2][3] * (M).at[3][0]) +    \
-                            (M).at[1][3] * ((M).at[2][0] * (M).at[3][1] -     \
-                                            (M).at[2][1] * (M).at[3][0])) -   \
-            (M).at[0][3] * ((M).at[1][0] * ((M).at[2][1] * (M).at[3][2] -     \
-                                            (M).at[2][2] * (M).at[3][1]) -    \
-                            (M).at[1][1] * ((M).at[2][0] * (M).at[3][2] -     \
-                                            (M).at[2][2] * (M).at[3][0]) +    \
-                            (M).at[1][2] * ((M).at[2][0] * (M).at[3][1] -     \
-                                            (M).at[2][1] * (M).at[3][0]));    \
-        assert(xuniq(det) != 0);                                              \
-        T xuniq(inv_det) = (T)1 / xuniq(det);                                 \
-        (O).at[0][0]     = ((M).at[1][1] * ((M).at[2][2] * (M).at[3][3] -     \
-                                        (M).at[2][3] * (M).at[3][2]) -    \
-                        (M).at[1][2] * ((M).at[2][1] * (M).at[3][3] -     \
-                                        (M).at[2][3] * (M).at[3][1]) +    \
-                        (M).at[1][3] * ((M).at[2][1] * (M).at[3][2] -     \
-                                        (M).at[2][2] * (M).at[3][1])) *   \
-                       xuniq(inv_det);                                        \
-        (O).at[0][1] = -((M).at[0][1] * ((M).at[2][2] * (M).at[3][3] -        \
-                                         (M).at[2][3] * (M).at[3][2]) -       \
-                         (M).at[0][2] * ((M).at[2][1] * (M).at[3][3] -        \
-                                         (M).at[2][3] * (M).at[3][1]) +       \
-                         (M).at[0][3] * ((M).at[2][1] * (M).at[3][2] -        \
-                                         (M).at[2][2] * (M).at[3][1])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[0][2] = ((M).at[0][1] * ((M).at[1][2] * (M).at[3][3] -         \
-                                        (M).at[1][3] * (M).at[3][2]) -        \
-                        (M).at[0][2] * ((M).at[1][1] * (M).at[3][3] -         \
-                                        (M).at[1][3] * (M).at[3][1]) +        \
-                        (M).at[0][3] * ((M).at[1][1] * (M).at[3][2] -         \
-                                        (M).at[1][2] * (M).at[3][1])) *       \
-                       xuniq(inv_det);                                        \
-        (O).at[0][3] = -((M).at[0][1] * ((M).at[1][2] * (M).at[2][3] -        \
-                                         (M).at[1][3] * (M).at[2][2]) -       \
-                         (M).at[0][2] * ((M).at[1][1] * (M).at[2][3] -        \
-                                         (M).at[1][3] * (M).at[2][1]) +       \
-                         (M).at[0][3] * ((M).at[1][1] * (M).at[2][2] -        \
-                                         (M).at[1][2] * (M).at[2][1])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[1][0] = -((M).at[1][0] * ((M).at[2][2] * (M).at[3][3] -        \
-                                         (M).at[2][3] * (M).at[3][2]) -       \
-                         (M).at[1][2] * ((M).at[2][0] * (M).at[3][3] -        \
-                                         (M).at[2][3] * (M).at[3][0]) +       \
-                         (M).at[1][3] * ((M).at[2][0] * (M).at[3][2] -        \
-                                         (M).at[2][2] * (M).at[3][0])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[1][1] = ((M).at[0][0] * ((M).at[2][2] * (M).at[3][3] -         \
-                                        (M).at[2][3] * (M).at[3][2]) -        \
-                        (M).at[0][2] * ((M).at[2][0] * (M).at[3][3] -         \
-                                        (M).at[2][3] * (M).at[3][0]) +        \
-                        (M).at[0][3] * ((M).at[2][0] * (M).at[3][2] -         \
-                                        (M).at[2][2] * (M).at[3][0])) *       \
-                       xuniq(inv_det);                                        \
-        (O).at[1][2] = -((M).at[0][0] * ((M).at[1][2] * (M).at[3][3] -        \
-                                         (M).at[1][3] * (M).at[3][2]) -       \
-                         (M).at[0][2] * ((M).at[1][0] * (M).at[3][3] -        \
-                                         (M).at[1][3] * (M).at[3][0]) +       \
-                         (M).at[0][3] * ((M).at[1][0] * (M).at[3][2] -        \
-                                         (M).at[1][2] * (M).at[3][0])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[1][3] = ((M).at[0][0] * ((M).at[1][2] * (M).at[2][3] -         \
-                                        (M).at[1][3] * (M).at[2][2]) -        \
-                        (M).at[0][2] * ((M).at[1][0] * (M).at[2][3] -         \
-                                        (M).at[1][3] * (M).at[2][0]) +        \
-                        (M).at[0][3] * ((M).at[1][0] * (M).at[2][2] -         \
-                                        (M).at[1][2] * (M).at[2][0])) *       \
-                       xuniq(inv_det);                                        \
-        (O).at[2][0] = ((M).at[1][0] * ((M).at[2][1] * (M).at[3][3] -         \
-                                        (M).at[2][3] * (M).at[3][1]) -        \
-                        (M).at[1][1] * ((M).at[2][0] * (M).at[3][3] -         \
-                                        (M).at[2][3] * (M).at[3][0]) +        \
-                        (M).at[1][3] * ((M).at[2][0] * (M).at[3][1] -         \
-                                        (M).at[2][1] * (M).at[3][0])) *       \
-                       xuniq(inv_det);                                        \
-        (O).at[2][1] = -((M).at[0][0] * ((M).at[2][1] * (M).at[3][3] -        \
-                                         (M).at[2][3] * (M).at[3][1]) -       \
-                         (M).at[0][1] * ((M).at[2][0] * (M).at[3][3] -        \
-                                         (M).at[2][3] * (M).at[3][0]) +       \
-                         (M).at[0][3] * ((M).at[2][0] * (M).at[3][1] -        \
-                                         (M).at[2][1] * (M).at[3][0])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[2][2] = ((M).at[0][0] * ((M).at[1][1] * (M).at[3][3] -         \
-                                        (M).at[1][3] * (M).at[3][1]) -        \
-                        (M).at[0][1] * ((M).at[1][0] * (M).at[3][3] -         \
-                                        (M).at[1][3] * (M).at[3][0]) +        \
-                        (M).at[0][3] * ((M).at[1][0] * (M).at[3][1] -         \
-                                        (M).at[1][1] * (M).at[3][0])) *       \
-                       xuniq(inv_det);                                        \
-        (O).at[2][3] = -((M).at[0][0] * ((M).at[1][1] * (M).at[2][3] -        \
-                                         (M).at[1][3] * (M).at[2][1]) -       \
-                         (M).at[0][1] * ((M).at[1][0] * (M).at[2][3] -        \
-                                         (M).at[1][3] * (M).at[2][0]) +       \
-                         (M).at[0][3] * ((M).at[1][0] * (M).at[2][1] -        \
-                                         (M).at[1][1] * (M).at[2][0])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[3][0] = -((M).at[1][0] * ((M).at[2][1] * (M).at[3][2] -        \
-                                         (M).at[2][2] * (M).at[3][1]) -       \
-                         (M).at[1][1] * ((M).at[2][0] * (M).at[3][2] -        \
-                                         (M).at[2][2] * (M).at[3][0]) +       \
-                         (M).at[1][2] * ((M).at[2][0] * (M).at[3][1] -        \
-                                         (M).at[2][1] * (M).at[3][0])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[3][1] = ((M).at[0][0] * ((M).at[2][1] * (M).at[3][2] -         \
-                                        (M).at[2][2] * (M).at[3][1]) -        \
-                        (M).at[0][1] * ((M).at[2][0] * (M).at[3][2] -         \
-                                        (M).at[2][2] * (M).at[3][0]) +        \
-                        (M).at[0][2] * ((M).at[2][0] * (M).at[3][1] -         \
-                                        (M).at[2][1] * (M).at[3][0])) *       \
-                       xuniq(inv_det);                                        \
-        (O).at[3][2] = -((M).at[0][0] * ((M).at[1][1] * (M).at[3][2] -        \
-                                         (M).at[1][2] * (M).at[3][1]) -       \
-                         (M).at[0][1] * ((M).at[1][0] * (M).at[3][2] -        \
-                                         (M).at[1][2] * (M).at[3][0]) +       \
-                         (M).at[0][2] * ((M).at[1][0] * (M).at[3][1] -        \
-                                         (M).at[1][1] * (M).at[3][0])) *      \
-                       xuniq(inv_det);                                        \
-        (O).at[3][3] = ((M).at[0][0] * ((M).at[1][1] * (M).at[2][2] -         \
-                                        (M).at[1][2] * (M).at[2][1]) -        \
-                        (M).at[0][1] * ((M).at[1][0] * (M).at[2][2] -         \
-                                        (M).at[1][2] * (M).at[2][0]) +        \
-                        (M).at[0][2] * ((M).at[1][0] * (M).at[2][1] -         \
-                                        (M).at[1][1] * (M).at[2][0])) *       \
-                       xuniq(inv_det);                                        \
+        T xuniq(a2323) =                                                      \
+            (M).at[2][2] * (M).at[3][3] - (M).at[2][3] * (M).at[3][2];        \
+        T xuniq(a1323) =                                                      \
+            (M).at[2][1] * (M).at[3][3] - (M).at[2][3] * (M).at[3][1];        \
+        T xuniq(a1223) =                                                      \
+            (M).at[2][1] * (M).at[3][2] - (M).at[2][2] * (M).at[3][1];        \
+        T xuniq(a0323) =                                                      \
+            (M).at[2][0] * (M).at[3][3] - (M).at[2][3] * (M).at[3][0];        \
+        T xuniq(a0223) =                                                      \
+            (M).at[2][0] * (M).at[3][2] - (M).at[2][2] * (M).at[3][0];        \
+        T xuniq(a0123) =                                                      \
+            (M).at[2][0] * (M).at[3][1] - (M).at[2][1] * (M).at[3][0];        \
+        T xuniq(a2313) =                                                      \
+            (M).at[1][2] * (M).at[3][3] - (M).at[1][3] * (M).at[3][2];        \
+        T xuniq(a1313) =                                                      \
+            (M).at[1][1] * (M).at[3][3] - (M).at[1][3] * (M).at[3][1];        \
+        T xuniq(a1213) =                                                      \
+            (M).at[1][1] * (M).at[3][2] - (M).at[1][2] * (M).at[3][1];        \
+        T xuniq(a2312) =                                                      \
+            (M).at[1][2] * (M).at[2][3] - (M).at[1][3] * (M).at[2][2];        \
+        T xuniq(a1312) =                                                      \
+            (M).at[1][1] * (M).at[2][3] - (M).at[1][3] * (M).at[2][1];        \
+        T xuniq(a1212) =                                                      \
+            (M).at[1][1] * (M).at[2][2] - (M).at[1][2] * (M).at[2][1];        \
+        T xuniq(a0313) =                                                      \
+            (M).at[1][0] * (M).at[3][3] - (M).at[1][3] * (M).at[3][0];        \
+        T xuniq(a0213) =                                                      \
+            (M).at[1][0] * (M).at[3][2] - (M).at[1][2] * (M).at[3][0];        \
+        T xuniq(a0312) =                                                      \
+            (M).at[1][0] * (M).at[2][3] - (M).at[1][3] * (M).at[2][0];        \
+        T xuniq(a0212) =                                                      \
+            (M).at[1][0] * (M).at[2][2] - (M).at[1][2] * (M).at[2][0];        \
+        T xuniq(a0113) =                                                      \
+            (M).at[1][0] * (M).at[3][1] - (M).at[1][1] * (M).at[3][0];        \
+        T xuniq(a0112) =                                                      \
+            (M).at[1][0] * (M).at[2][1] - (M).at[1][1] * (M).at[2][0];        \
+                                                                              \
+        T xuniq(det) = (M).at[0][0] * ((M).at[1][1] * xuniq(a2323) -          \
+                                       (M).at[1][2] * xuniq(a1323) +          \
+                                       (M).at[1][3] * xuniq(a1223)) -         \
+                       (M).at[0][1] * ((M).at[1][0] * xuniq(a2323) -          \
+                                       (M).at[1][2] * xuniq(a0323) +          \
+                                       (M).at[1][3] * xuniq(a0223)) +         \
+                       (M).at[0][2] * ((M).at[1][0] * xuniq(a1323) -          \
+                                       (M).at[1][1] * xuniq(a0323) +          \
+                                       (M).at[1][3] * xuniq(a0123)) -         \
+                       (M).at[0][3] * ((M).at[1][0] * xuniq(a1223) -          \
+                                       (M).at[1][1] * xuniq(a0223) +          \
+                                       (M).at[1][2] * xuniq(a0123));          \
+                                                                              \
+        assert(xuniq(det) > (T)0 && "matrix not invertible");                 \
+        xuniq(det) = (T)1 / xuniq(det);                                       \
+                                                                              \
+        (O).at[0][0] = xuniq(det) * ((M).at[1][1] * xuniq(a2323) -            \
+                                     (M).at[1][2] * xuniq(a1323) +            \
+                                     (M).at[1][3] * xuniq(a1223));            \
+        (O).at[0][1] = xuniq(det) * -((M).at[0][1] * xuniq(a2323) -           \
+                                      (M).at[0][2] * xuniq(a1323) +           \
+                                      (M).at[0][3] * xuniq(a1223));           \
+        (O).at[0][2] = xuniq(det) * ((M).at[0][1] * xuniq(a2313) -            \
+                                     (M).at[0][2] * xuniq(a1313) +            \
+                                     (M).at[0][3] * xuniq(a1213));            \
+        (O).at[0][3] = xuniq(det) * -((M).at[0][1] * xuniq(a2312) -           \
+                                      (M).at[0][2] * xuniq(a1312) +           \
+                                      (M).at[0][3] * xuniq(a1212));           \
+        (O).at[1][0] = xuniq(det) * -((M).at[1][0] * xuniq(a2323) -           \
+                                      (M).at[1][2] * xuniq(a0323) +           \
+                                      (M).at[1][3] * xuniq(a0223));           \
+        (O).at[1][1] = xuniq(det) * ((M).at[0][0] * xuniq(a2323) -            \
+                                     (M).at[0][2] * xuniq(a0323) +            \
+                                     (M).at[0][3] * xuniq(a0223));            \
+        (O).at[1][2] = xuniq(det) * -((M).at[0][0] * xuniq(a2313) -           \
+                                      (M).at[0][2] * xuniq(a0313) +           \
+                                      (M).at[0][3] * xuniq(a0213));           \
+        (O).at[1][3] = xuniq(det) * ((M).at[0][0] * xuniq(a2312) -            \
+                                     (M).at[0][2] * xuniq(a0312) +            \
+                                     (M).at[0][3] * xuniq(a0212));            \
+        (O).at[2][0] = xuniq(det) * ((M).at[1][0] * xuniq(a1323) -            \
+                                     (M).at[1][1] * xuniq(a0323) +            \
+                                     (M).at[1][3] * xuniq(a0123));            \
+        (O).at[2][1] = xuniq(det) * -((M).at[0][0] * xuniq(a1323) -           \
+                                      (M).at[0][1] * xuniq(a0323) +           \
+                                      (M).at[0][3] * xuniq(a0123));           \
+        (O).at[2][2] = xuniq(det) * ((M).at[0][0] * xuniq(a1313) -            \
+                                     (M).at[0][1] * xuniq(a0313) +            \
+                                     (M).at[0][3] * xuniq(a0113));            \
+        (O).at[2][3] = xuniq(det) * -((M).at[0][0] * xuniq(a1312) -           \
+                                      (M).at[0][1] * xuniq(a0312) +           \
+                                      (M).at[0][3] * xuniq(a0112));           \
+        (O).at[3][0] = xuniq(det) * -((M).at[1][0] * xuniq(a1223) -           \
+                                      (M).at[1][1] * xuniq(a0223) +           \
+                                      (M).at[1][2] * xuniq(a0123));           \
+        (O).at[3][1] = xuniq(det) * ((M).at[0][0] * xuniq(a1223) -            \
+                                     (M).at[0][1] * xuniq(a0223) +            \
+                                     (M).at[0][2] * xuniq(a0123));            \
+        (O).at[3][2] = xuniq(det) * -((M).at[0][0] * xuniq(a1213) -           \
+                                      (M).at[0][1] * xuniq(a0213) +           \
+                                      (M).at[0][2] * xuniq(a0113));           \
+        (O).at[3][3] = xuniq(det) * ((M).at[0][0] * xuniq(a1212) -            \
+                                     (M).at[0][1] * xuniq(a0212) +            \
+                                     (M).at[0][2] * xuniq(a0112));            \
     } while (0)
 
 #define xmat4_invert_f32(M, O) _xmat4_invert(float, M, O)
