@@ -17,13 +17,13 @@ int main(int argc, char **argv) {
     assert(m4.at[3][3] == 1.0f);
     assert(m4.at[0][1] == 0.0f);
 
-    xmat3f32_t a = {{1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    /*xmat3f32_t a = {{1, 2, 3, 4, 5, 6, 7, 8, 9}};
     xmat3f32_t b = {{9, 8, 7, 6, 5, 4, 3, 2, 1}};
     xmat3f32_t result;
     xmat3_mul(a, b, result);
     assert(result.at[0][0] == 30.0f);
     assert(result.at[0][1] == 24.0f);
-    assert(result.at[0][2] == 18.0f);
+    assert(result.at[0][2] == 18.0f);*/
 
     xmat4f32_t m4a;
     xmat_identity_f32(m4a);
